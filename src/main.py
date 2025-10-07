@@ -11,7 +11,7 @@ from src.models.user import db
 from src.routes.user import user_bp
 from flask_session import Session # LINHA NOVA
 
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), \'static\'))
+app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 CORS(app, supports_credentials=True)
 app.config["SESSION_COOKIE_SECURE"] = os.getenv("FLASK_SESSION_COOKIE_SECURE", "False").lower() == "true"
 app.config["SESSION_COOKIE_SAMESITE"] = os.getenv("FLASK_SESSION_COOKIE_SAMESITE", "Lax")

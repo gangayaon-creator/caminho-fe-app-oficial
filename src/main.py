@@ -7,23 +7,40 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, send_from_directory, session
 from flask_cors import CORS
+from flask_session import Session # Importar Flask-Session
 from src.models.user import db
 from src.routes.user import user_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-CORS(app, supports_credentials=True)
-app.config["SESSION_COOKIE_SECURE"] = os.getenv("FLASK_SESSION_COOKIE_SECURE", "False").lower() == "true"
-app.config["SESSION_COOKIE_SAMESITE"] = os.getenv("FLASK_SESSION_COOKIE_SAMESITE", "Lax")
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+CORS(app, supports_credentials=True, origins=['https://caminho-fe-app-oficial.onrender.com'])
+
+# Configurações da sessão
+app.config["SESSION_TYPE"] = "sqlalchemy"
+app.config["SESSION_SQLALCHEMY"] = db
+app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_USE_SIGNER"] = True
+app.config["SESSION_KEY_PREFIX"] = "flask_session_"
+app.config["SESSION_COOKIE_SECURE"] = True # Essencial para HTTPS em produção
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "None" # Essencial para requisições cross-origin
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') # Carrega a SECRET_KEY da variável de ambiente
+
+# Inicializar Flask-Session
+Session(app)
 
 app.register_blueprint(user_bp, url_prefix='/api')
 
-# uncomment if you need to use database
+# Configuração do banco de dados
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+
 with app.app_context():
-    db.create_all()
+    if os.getenv("FLASK_RUN_MIGRATIONS") == "true":
+        print("Executando db.create_all() para criar tabelas.")
+        db.create_all()
+    else:
+        print("Criação de tabelas ignorada. Defina FLASK_RUN_MIGRATIONS=true para executar.")
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

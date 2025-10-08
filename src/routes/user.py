@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, session
+import logging
 from src.models.user import User, db
 
 user_bp = Blueprint('user', __name__)
@@ -38,7 +39,8 @@ def login():
         
         if user and user.check_password(data['password']):
             # Salvar ID do usuário na sessão
-            session['user_id'] = user.id
+            session["user_id"] = user.id
+            logging.info(f"Usuário {user.email} logado. user_id na sessão: {session.get("user_id")}")
             return jsonify({
                 'message': 'Login realizado com sucesso',
                 'user': user.to_dict()
@@ -58,6 +60,7 @@ def logout():
 def get_current_user():
     try:
         user_id = session.get('user_id')
+        logging.info(f"Verificando /api/me. user_id na sessão: {user_id}")
         if not user_id:
             return jsonify({'error': 'Não autenticado'}), 401
         
@@ -74,6 +77,7 @@ def get_current_user():
 def update_user_data():
     try:
         user_id = session.get('user_id')
+        logging.info(f"Verificando /api/me. user_id na sessão: {user_id}")
         if not user_id:
             return jsonify({'error': 'Não autenticado'}), 401
         

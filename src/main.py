@@ -17,7 +17,7 @@ from src.models.user import db
 from src.routes.user import user_bp
 from flask_session import Session
 
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), \'static\'))
+app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 CORS(app, supports_credentials=True)
 
 # Configuração do banco de dados deve vir antes da inicialização da sessão

@@ -22,7 +22,7 @@ app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_KEY_PREFIX"] = "flask_session_"
 app.config["SESSION_COOKIE_SECURE"] = True # Essencial para HTTPS em produção
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SAMESITE"] = "None" # Essencial para requisições cross-origin
+#app.config["SESSION_COOKIE_SAMESITE"] = "None" # Essencial para requisições cross-origin
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') # Carrega a SECRET_KEY da variável de ambiente
 
 # Inicializar Flask-Session

@@ -21,11 +21,14 @@ app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'sta
 CORS(app, supports_credentials=True)
 
 # Configuração do banco de dados deve vir antes da inicialização da sessão
-app.config[\'SQLALCHEMY_DATABASE_URI\'] = os.getenv(\'DATABASE_URL\', f"sqlite:///{os.path.join(os.path.dirname(__file__), \'database\', \'app.db\')}")
-app.config[\'SQLALCHEMY_TRACK_MODIFICATIONS\'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
+
+
 # Bloco para garantir a criação das tabelas e logging de conexão ao banco de dados (executado via comando de inicialização no Render)
+
 with app.app_context():
     try:
         # Tenta conectar ao banco de dados para verificar a acessibilidade
